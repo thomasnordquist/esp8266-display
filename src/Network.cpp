@@ -1,9 +1,10 @@
+#include "main.hpp"
 #include "Network.hpp"
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-const char* ssid = "ssid";
-const char* password = "password";
+const char* ssid = AP_SSID;
+const char* password = AP_PASSWORD;
 
 void Network::setup() {
   Serial.begin(115200);
