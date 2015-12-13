@@ -15,8 +15,21 @@ void Logging::setup(){
   Udp.endPacket();
 }
 
-void Logging::log(char* message) {
+void Logging::startStream() {
   Udp.beginPacket(IP, PORT);
-  Udp.println(message);
+}
+
+void Logging::endStream() {
   Udp.endPacket();
+  delay(10);
+}
+
+void Logging::stream(char* s) {
+  Udp.write(s);
+}
+
+void Logging::log(char* message) {
+  Logging::startStream();
+  Logging::stream(message);
+  Logging::endStream();
 }
