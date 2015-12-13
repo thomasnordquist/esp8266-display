@@ -5,14 +5,17 @@
 #include "OTA.hpp"
 #include "Logging.hpp"
 #include "Color.hpp"
+#include "GammaCorrection.hpp"
 
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>
 
+#define DEBUG 1
 #define GPIO4 4
 #define LED_COUNT 1024
+#define COLOR_RESOLUTION 64 // in bits
 
 Logging logging;
 Color leds[LED_COUNT];
@@ -44,6 +47,11 @@ void setup() {
 
   pinMode(GPIO4, OUTPUT);   // Initialize the BUILTIN_LED pin as an output
   pinMode(5, OUTPUT);   // Initialize the BUILTIN_LED pin as an output
+
+  GammaCorrection::setup(COLOR_RESOLUTION);
+  #ifdef DEBUG
+    GammaCorrection::printLookupTable();
+  #endif
 }
 
 void handleNetwork() {
