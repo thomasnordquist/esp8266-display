@@ -40,8 +40,9 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
     int line = 0x00;
     int pixel = -1;
     for(int row = 0; row < 16; row++) { // 16 -> rows / 2
+      uint32_t row_mask = row<<6;
       for(int col = 0; col < 32; col++) { // columns
-        uint32_t output = row<<6;
+        uint32_t output = row_mask;
 
         pixel++;
         Color c = leds[pixel];
