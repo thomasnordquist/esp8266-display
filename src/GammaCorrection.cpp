@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include "Logging.hpp"
 #include "GammaCorrection.hpp"
-#include "gamma.h"
+#include "gamma.hpp"
 
 uint8_t GammaCorrection::gamma[GAMMA_COLORS];
 

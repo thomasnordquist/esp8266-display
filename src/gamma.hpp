@@ -1,8 +1,10 @@
 #ifndef GAMMA_H
 #define GAMMA_H
 
+#include <cstdint>
+
 #define GAMMA_COLORS 256
-const uint8_t gamma_lookup[] = {
+static const uint8_t gamma_lookup[] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
     1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2,

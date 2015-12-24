@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "gamma.h"
+#include "gamma.hpp"
 
 #ifndef GAMMA_CORRECTION_H
 #define GAMMA_CORRECTION_H
