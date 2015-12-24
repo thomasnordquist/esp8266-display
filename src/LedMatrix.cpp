@@ -35,11 +35,12 @@ inline ICACHE_RAM_ATTR __attribute__((always_inline)) void LedMatrix::writeToSpi
 #pragma GCC optimize ("inline", "O2")
 void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
   uint32_t *leds = LedMatrix::leds;
+  #if OVERCLOCK == 1
+    XT_CLI // disable interrupts
+    REG_SET_BIT(0x3ff00014, BIT(1)); // overclock
+  #endif
+
   for (int cycle=0; cycle<COLOR_RESOLUTION; cycle++) {
-    #if OVERCLOCK == 1
-      XT_CLI // disable interrupts
-      REG_SET_BIT(0x3ff00014, BIT(1)); // overclock
-    #endif
 
     int line = 0x00;
     int pixel = -1;
@@ -80,11 +81,11 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
         writeToSpi(output<<16);
       }
     }
-    #if OVERCLOCK == 1
-      REG_SET_BIT(0x3ff00014, BIT(0)); // return to normal speed
-      XT_STI // enable interrupts
-    #endif
   }
+  #if OVERCLOCK == 1
+    REG_SET_BIT(0x3ff00014, BIT(0)); // return to normal speed
+    XT_STI // enable interrupts
+  #endif
 }
 
 void LedMatrix::setupMatrix(uint32_t *colors, int amount) {
