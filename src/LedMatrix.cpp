@@ -25,9 +25,13 @@ void LedMatrix::init() {
   #endif
 }
 
-#pragma GCC optimize ("Os")
+#pragma GCC optimize ("O2")
 inline ICACHE_RAM_ATTR __attribute__((always_inline)) void LedMatrix::writeToSpi(uint32_t reg) {
   WRITE_PERI_REG(SPI_W0(HSPI), reg);
+}
+
+#pragma GCC optimize ("O2")
+inline ICACHE_RAM_ATTR __attribute__((always_inline)) void flushSpi() {
   SET_PERI_REG_MASK(SPI_CMD(HSPI), SPI_USR);
 }
 
@@ -60,6 +64,15 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
           output |= (0x01 << 1);
         }
 
+        /*
+         * output registery can be busy and block the cpu, I flush before I write to the output register.
+         * it saves me 600us (12%) in my test configuration
+         * This way I write one time to often but, the "dirt" should be shifted out immediatly afterwards
+         * catching it with if(cycle > 0) adds another 100us (which is 2.5%)
+         * benchmarks at my test setup show that this is the best position to flush; maybe I have to move it later
+         */
+        flushSpi();
+
         if(BLUE(color) > cycle ) {
           output |= (0x01 << 2);
         }
@@ -82,6 +95,7 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
       }
     }
   }
+  flushSpi();
   #if OVERCLOCK == 1
     REG_SET_BIT(0x3ff00014, BIT(0)); // return to normal speed
     XT_STI // enable interrupts
