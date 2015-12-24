@@ -19,14 +19,14 @@ void LedMatrix::init() {
 }
 
 #pragma GCC optimize ("Os")
-inline __attribute__((always_inline)) void LedMatrix::writeToSpi(uint32_t reg) {
+inline ICACHE_RAM_ATTR __attribute__((always_inline)) void LedMatrix::writeToSpi(uint32_t reg) {
   WRITE_PERI_REG(SPI_W0(HSPI), reg);
   SET_PERI_REG_MASK(SPI_CMD(HSPI), SPI_USR);
 }
 
 #pragma GCC push_options
 #pragma GCC optimize ("inline", "O2")
-void LedMatrix::writeFrame() {
+void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
   Color *leds = LedMatrix::leds;
   for (int cycle=0; cycle<COLOR_RESOLUTION; cycle++) {
 
