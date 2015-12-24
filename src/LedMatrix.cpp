@@ -71,12 +71,10 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
           output |= (0x01 << 5);
         }
 
+        // writing data to shift register,
+        // display_clk = !spi_enable (this way we can avoid writing to very slow registers)
         writeToSpi(output<<16);
         pixel++;
-
-        //update clk pin
-        output |= 0x01 << 11;
-        writeToSpi(output);
       }
     }
     #if OVERCLOCK == 1
