@@ -7,13 +7,17 @@
 #define XT_CLI __asm__("rsil a2, 3");
 #define XT_STI __asm__("rsil a2, 0");
 
-Color *LedMatrix::leds;
+#define RED(color) (color & 0x000000FF)
+#define GREEN(color) (color & 0x0000FF00) >> 8
+#define BLUE(color) (color & 0x00FF0000) >> 16
+
+uint32_t *LedMatrix::leds;
 
 void LedMatrix::init() {
   spi_init(HSPI);
   spi_tx16_setup(HSPI, 0);
 
-  LedMatrix::leds = new Color[LED_COUNT];
+  LedMatrix::leds = new uint32_t[LED_COUNT];
 
   GammaCorrection::setup(COLOR_RESOLUTION);
   #ifdef DEBUG
@@ -30,7 +34,7 @@ inline ICACHE_RAM_ATTR __attribute__((always_inline)) void LedMatrix::writeToSpi
 #pragma GCC push_options
 #pragma GCC optimize ("inline", "O2")
 void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
-  Color *leds = LedMatrix::leds;
+  uint32_t *leds = LedMatrix::leds;
   for (int cycle=0; cycle<COLOR_RESOLUTION; cycle++) {
     #if OVERCLOCK == 1
       XT_CLI // disable interrupts
@@ -44,32 +48,30 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
       for(int col = 0; col < 32; col++) { // columns
         uint32_t output = row_mask;
 
-        pixel++;
-        Color c = leds[pixel];
-        pixel++;
+        uint32_t color = leds[pixel++];
+        uint32_t color2 = leds[pixel++];
 
-        if(c.r > cycle) {
+        if(RED(color) > cycle) {
           output |= 0x01;
         }
 
-        if(c.g > cycle) {
+        if(GREEN(color) > cycle ) {
           output |= (0x01 << 1);
         }
 
-        if(c.b > cycle) {
+        if(BLUE(color) > cycle ) {
           output |= (0x01 << 2);
         }
 
-        c = leds[pixel];
-        if(c.r > cycle) {
+        if(RED(color2) > cycle) {
           output |= (0x01 << 3);
         }
 
-        if(c.g > cycle) {
+        if(GREEN(color2) > cycle ) {
           output |= (0x01 << 4);
         }
 
-        if(c.b > cycle) {
+        if(BLUE(color2) > cycle ) {
           output |= (0x01 << 5);
         }
 
@@ -85,12 +87,15 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
   }
 }
 
-void LedMatrix::setupMatrix(Color *leds, int amount) {
+void LedMatrix::setupMatrix(uint32_t *colors, int amount) {
   for(int i = 0; i<amount; i++) {
     Color *c = new Color();
     (*c).r = i%255;
-    (*c).g = i % 3;
+    (*c).g = 128;
     (*c).b = i % 7;
-    leds[i] = (*c);
+    uint32_t color = (*c).b;
+    color |= (*c).g << 8;
+    color |= (*c).b << 16;
+    colors[i] = color;
   }
 }

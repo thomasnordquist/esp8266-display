@@ -11,8 +11,8 @@ class LedMatrix {
 
   protected:
     static void writeToSpi(uint32_t reg);
-    static void setupMatrix(Color *leds, int amount);
-    static Color *leds;
+    static void setupMatrix(uint32_t *colors, int amount);
+    static uint32_t *leds;
 
 };
 
