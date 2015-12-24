@@ -5,6 +5,7 @@
 #define GPIO4 4
 #define LED_COUNT 1024
 #define COLOR_RESOLUTION 64 // in bits
+#define OVERCLOCK 0  // 160mhz for high speed applications, also locks interrupts in this period
 
 #define AP_SSID "SSID"
 #define AP_PASSWORD "PASSWORD"
