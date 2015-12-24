@@ -6,7 +6,7 @@
 uint8_t GammaCorrection::gamma[GAMMA_COLORS];
 
 void GammaCorrection::setup(int bits) {
-  float factor = (float)bits/(float)GAMMA_COLORS;
+  float factor = (float)(bits-1)/(float)GAMMA_COLORS;
   for(int i=0; i < GAMMA_COLORS; i++) {
     GammaCorrection::gamma[i] = round(gamma_lookup[i]*factor);
   }
