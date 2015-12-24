@@ -2,13 +2,20 @@
 #include "LedMatrix.hpp"
 #include "hspi/spi.c"
 #include "Color.hpp"
+#include "GammaCorrection.hpp"
 
 Color *LedMatrix::leds;
 
 void LedMatrix::init() {
-  LedMatrix::leds = new Color[LED_COUNT];
   spi_init(HSPI);
   spi_tx16_setup(HSPI, 0);
+
+  LedMatrix::leds = new Color[LED_COUNT];
+
+  GammaCorrection::setup(COLOR_RESOLUTION);
+  #ifdef DEBUG
+    GammaCorrection::printLookupTable();
+  #endif
 }
 
 #pragma GCC optimize ("Os")
