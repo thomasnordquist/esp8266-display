@@ -49,7 +49,7 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
     for(int row = 0; row < 16; row++) { // 16 -> rows / 2 since the display is interleaved
       uint32_t row_mask = row<<6;
       for(int col = 0; col < 32; col++) { // columns
-        uint32_t output = row_mask;
+        uint32_t output = row_mask; // reset output
 
         uint32_t color = leds[pixel++];
         uint32_t color2 = leds[pixel++];
@@ -89,11 +89,12 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
 
         // writing data to shift register,
         // display_clk = !spi_enable (this way we can avoid writing to very slow registers)
-        writeToSpi(output<<16);
+        writeToSpi(output<<16); // shift the values to the start of the 32bit register
       }
     }
   }
-  flushSpi();
+  flushSpi(); // final flush require for the last data row; see flush above for details
+  
   #if OVERCLOCK == 1
     REG_SET_BIT(0x3ff00014, BIT(0)); // return to normal speed
     XT_STI // enable interrupts
