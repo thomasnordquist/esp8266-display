@@ -38,51 +38,46 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
     #endif
 
     int line = 0x00;
-    int columnCount = 0;
+    int pixel = 0;
+    for(int row = 0; row < 16; row++) { // 16 -> rows / 2
+      for(int col = 0; col < 32; col++) { // columns
+        uint32_t output = row<<6;
 
-    for(int i = 0; i < LED_COUNT; i+=2) {
-      columnCount++;
-      uint32_t output = 0x00;
+        Color c = leds[pixel];
 
-      Color c = leds[i];
+        if(c.r > cycle) {
+          output |= 0x01;
+        }
 
-      if(c.r > cycle) {
-        output |= 0x01;
+        if(c.g > cycle) {
+          output |= (0x01 << 1);
+        }
+
+        if(c.b > cycle) {
+          output |= (0x01 << 2);
+        }
+
+        pixel++;
+        c = leds[pixel];
+        if(c.r > cycle) {
+          output |= (0x01 << 3);
+        }
+
+        if(c.g > cycle) {
+          output |= (0x01 << 4);
+        }
+
+        if(c.b > cycle) {
+          output |= (0x01 << 5);
+        }
+
+        writeToSpi(output<<16);
+        pixel++;
+
+        //update clk pin
+        output |= 0x01 << 11;
+        writeToSpi(output);
       }
-
-      if(c.g > cycle) {
-        output |= (0x01 << 1);
-      }
-
-      if(c.b > cycle) {
-        output |= (0x01 << 2);
-      }
-
-      c = leds[i+1];
-      if(c.r > cycle) {
-        output |= (0x01 << 3);
-      }
-
-      if(c.g > cycle) {
-        output |= (0x01 << 4);
-      }
-
-      if(c.b > cycle) {
-        output |= (0x01 << 5);
-      }
-
-      output |= line;
-
-      if(columnCount == 64) {
-        columnCount = 0;
-        line+= 1 << 6;
-      }
-
-      output <<= 16;
-      writeToSpi(output);
-
-      //update clk pin
-      output |= 0x01 << 11;
     }
     #if OVERCLOCK == 1
       REG_SET_BIT(0x3ff00014, BIT(0)); // return to normal speed
