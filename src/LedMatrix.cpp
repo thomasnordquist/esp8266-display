@@ -46,6 +46,7 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
 
         pixel++;
         Color c = leds[pixel];
+        pixel++;
 
         if(c.r > cycle) {
           output |= 0x01;
@@ -59,7 +60,6 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
           output |= (0x01 << 2);
         }
 
-        pixel++;
         c = leds[pixel];
         if(c.r > cycle) {
           output |= (0x01 << 3);
