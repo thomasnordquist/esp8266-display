@@ -45,10 +45,8 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
   #endif
 
   for (int cycle=0; cycle<COLOR_RESOLUTION; cycle++) {
-
-    int line = 0x00;
-    int pixel = -1;
-    for(int row = 0; row < 16; row++) { // 16 -> rows / 2
+    int pixel = 0x00;
+    for(int row = 0; row < 16; row++) { // 16 -> rows / 2 since the display is interleaved
       uint32_t row_mask = row<<6;
       for(int col = 0; col < 32; col++) { // columns
         uint32_t output = row_mask;
