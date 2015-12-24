@@ -38,11 +38,12 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
     #endif
 
     int line = 0x00;
-    int pixel = 0;
+    int pixel = -1;
     for(int row = 0; row < 16; row++) { // 16 -> rows / 2
       for(int col = 0; col < 32; col++) { // columns
         uint32_t output = row<<6;
 
+        pixel++;
         Color c = leds[pixel];
 
         if(c.r > cycle) {
@@ -74,7 +75,6 @@ void ICACHE_RAM_ATTR LedMatrix::writeFrame() {
         // writing data to shift register,
         // display_clk = !spi_enable (this way we can avoid writing to very slow registers)
         writeToSpi(output<<16);
-        pixel++;
       }
     }
     #if OVERCLOCK == 1
