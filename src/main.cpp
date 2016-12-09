@@ -21,6 +21,8 @@
 #include "SH1106.h"
 #include "OLEDDisplayUi.h"
 #include "Weather.hpp"
+#include "animations/Animation.hpp"
+#include "animations/elephant.h"
 
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
@@ -90,6 +92,8 @@ void weatherInfo(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int
     drawImage(display, 112+x, 37+y, HUMIDITY);
 }
 
+Animation *heartAnimation = new Animation(ELEPHANT, ELEPHANT_FRAMES, 32, 32, 200);
+
 void heapOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
     // overwrite complete area where text will be rendered
     display->setColor(BLACK); // alternate colors
@@ -107,6 +111,7 @@ void heapOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
     display->setTextAlignment(TEXT_ALIGN_LEFT);
     display->drawString(0, 54, buffer);
 
+    display->drawXbm(10, 0, heartAnimation->_width, heartAnimation->_height, heartAnimation->getFrame());
     //display->drawString(10, 0, timeClient.getFormattedTime());
     //drawRssiImage(display, 0, 0);
 }
