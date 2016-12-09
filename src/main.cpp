@@ -191,11 +191,6 @@ void setup() {
   ThingSpeak.begin(client);
 
   setupNtp();
-
-  // Wait for an OTA update before doing anything else
-  while(OTA::guard()) {
-    OTA::handleUpdate();
-  }
 }
 
 unsigned long lastWeatherUpdate = LONG_MAX;
@@ -248,6 +243,12 @@ void updateRssi() {
 }
 
 void loop() {
+  // Wait for an OTA update before doing anything else
+  if(OTA::guard()) {
+    OTA::handleUpdate();
+    return;
+  }
+
   handleNetwork();
   int remainingTimeBudget = ui.update();
 
