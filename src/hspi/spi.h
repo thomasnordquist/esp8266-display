@@ -30,6 +30,7 @@
 #include "osapi.h"
 //#include "uart.h"
 #include "os_type.h"
+#include "../main.hpp"
 
 //Define SPI hardware modules
 #define SPI 0
@@ -46,9 +47,9 @@
 #endif
 
 //Define some default SPI clock settings
-#define SPI_CLK_PREDIV 2
-#define SPI_CLK_CNTDIV 5
-#define SPI_CLK_FREQ CPU_CLK_FREQ/(SPI_CLK_PREDIV*SPI_CLK_CNTDIV) // 80 / (2*1) = 40 MHz
+#define SPI_CLK_PREDIV 1
+#define SPI_CLK_CNTDIV 2
+#define SPI_CLK_FREQ 160*1000000/(SPI_CLK_PREDIV*SPI_CLK_CNTDIV) // 80 / (2*1) = 40 MHz
 
 void spi_init(uint8 spi_no);
 void spi_init_gpio(uint8 spi_no, uint8 sysclk_as_spiclk);

@@ -1,8 +1,15 @@
 #include "OTA.hpp"
+#include "main.hpp"
+#include "fonts/Roboto.h"
 #include <ArduinoOTA.h>
 #include <ESP8266mDNS.h>
+#include "SH1106.h"
 
-void OTA::setup(){
+#define OTA_GUARD_WAIT 3000
+unsigned long OTA::firstGuardExecution = 0;
+bool OTA::guardHasBeenSatisfied = false;
+
+void OTA::setup(OLEDDisplay *display){
   // Port defaults to 8266
   // ArduinoOTA.setPort(8266);
 
@@ -12,15 +19,29 @@ void OTA::setup(){
   // No authentication by default
   //ArduinoOTA.setPassword((const char *)"bierbier");
 
-  ArduinoOTA.onStart([]() {
-    Serial.println("Start");
+  ArduinoOTA.onStart([display]() {
+    Serial.println("\nOTA Update");
+    display->clear();
+    display->setFont(Roboto_10);
+    display->setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+    display->drawString(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2 - 10, "OTA Update");
   });
-  ArduinoOTA.onEnd([]() {
+
+  ArduinoOTA.onEnd([display]() {
     Serial.println("\nEnd");
+    display->clear();
+    display->setFont(Roboto_16);
+    display->setTextAlignment(TEXT_ALIGN_CENTER_BOTH);
+    display->drawString(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, "Flashing...");
+    display->display();
   });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+
+  ArduinoOTA.onProgress([display](unsigned int progress, unsigned int total) {
+    //Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    display->drawProgressBar(4, 32, 120, 8, progress / (total / 100) );
+    display->display();
   });
+
   ArduinoOTA.onError([](ota_error_t error) {
     Serial.printf("Error[%u]: ", error);
     if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
@@ -37,4 +58,20 @@ void OTA::setup(){
 
 void OTA::handleUpdate() {
   ArduinoOTA.handle();
+}
+
+bool OTA::guard() {
+  if (OTA::guardHasBeenSatisfied) {
+    return false;
+  } else if (OTA::firstGuardExecution == 0) {
+    OTA::firstGuardExecution = millis(); // initialize guard
+    return true;
+  }
+
+  if (millis() - OTA::firstGuardExecution > OTA_GUARD_WAIT) {
+    OTA::guardHasBeenSatisfied = true;
+    return true;
+  }
+
+  return true;
 }

@@ -1,9 +1,9 @@
 #include "Logging.hpp"
 #include <ESP8266WiFi.h>
-#include <WiFiUDP.h>
+#include <WiFiUdp.h>
 #include <stdio.h>
 
-#define IP "192.168.178.69"
+#define IP "192.168.178.22"
 #define PORT 1234
 WiFiUDP Udp;
 
@@ -32,4 +32,10 @@ void Logging::log(char* message) {
   Logging::startStream();
   Logging::stream(message);
   Logging::endStream();
+}
+
+void Logging::log(String message) {
+  char buffer[128];
+  message.toCharArray(buffer, 128);
+  Logging::log(buffer);
 }

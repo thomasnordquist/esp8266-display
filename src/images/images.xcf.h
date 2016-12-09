@@ -1,0 +1,80 @@
+// IMG_HEART
+#define IMG_HEART_width 8
+#define IMG_HEART_height 8
+const char IMG_HEART_bits[] = {
+  0x66, 0xFF, 0xFF, 0xFF, 0xFF, 0x7E, 0x3C, 0x18, };
+// IMG_ARROW_RIGHT
+#define IMG_ARROW_RIGHT_width 8
+#define IMG_ARROW_RIGHT_height 8
+const char IMG_ARROW_RIGHT_bits[] = {
+  0x0C, 0x18, 0x30, 0x60, 0x60, 0x30, 0x18, 0x0C, };
+// IMG_4_BARS
+#define IMG_4_BARS_width 8
+#define IMG_4_BARS_height 8
+const char IMG_4_BARS_bits[] = {
+  0x00, 0xFF, 0x00, 0x7E, 0x00, 0x3C, 0x00, 0x18, };
+// IMG_3_BARS
+#define IMG_3_BARS_width 8
+#define IMG_3_BARS_height 8
+const char IMG_3_BARS_bits[] = {
+  0x00, 0x00, 0x00, 0x7E, 0x00, 0x3C, 0x00, 0x18, };
+// IMG_2_BARS
+#define IMG_2_BARS_width 8
+#define IMG_2_BARS_height 8
+const char IMG_2_BARS_bits[] = {
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x3C, 0x00, 0x18, };
+// IMG_1_BAR
+#define IMG_1_BAR_width 8
+#define IMG_1_BAR_height 8
+const char IMG_1_BAR_bits[] = {
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, };
+// IMG_CELSIUS
+#define IMG_CELSIUS_width 8
+#define IMG_CELSIUS_height 8
+const char IMG_CELSIUS_bits[] = {
+  0x02, 0xE5, 0x32, 0x10, 0x10, 0x10, 0x30, 0xE0, };
+// IMG_NOISE
+#define IMG_NOISE_width 8
+#define IMG_NOISE_height 8
+const char IMG_NOISE_bits[] = {
+  0xDB, 0x6D, 0xB6, 0xDB, 0x6D, 0xB6, 0xDB, 0x6D, };
+// IMG_LOCK
+#define IMG_LOCK_width 8
+#define IMG_LOCK_height 8
+const char IMG_LOCK_bits[] = {
+  0x3C, 0x24, 0x24, 0x7E, 0x42, 0x5A, 0x5A, 0x7E, };
+// IMG_PERSON
+#define IMG_PERSON_width 8
+#define IMG_PERSON_height 8
+const char IMG_PERSON_bits[] = {
+  0x18, 0x3C, 0x3C, 0x18, 0x7E, 0x7E, 0xFF, 0xFF, };
+// IMG_PLUS
+#define IMG_PLUS_width 8
+#define IMG_PLUS_height 8
+const char IMG_PLUS_bits[] = {
+  0x00, 0x18, 0x18, 0x7E, 0x7E, 0x18, 0x18, 0x00, };
+// IMG_MINUS
+#define IMG_MINUS_width 8
+#define IMG_MINUS_height 8
+const char IMG_MINUS_bits[] = {
+  0x00, 0x00, 0x00, 0x7E, 0x7E, 0x00, 0x00, 0x00, };
+// IMG_CROSS
+#define IMG_CROSS_width 8
+#define IMG_CROSS_height 8
+const char IMG_CROSS_bits[] = {
+  0x00, 0x42, 0x24, 0x10, 0x08, 0x24, 0x42, 0x00, };
+// IMG_ARROW_LEFT
+#define IMG_ARROW_LEFT_width 8
+#define IMG_ARROW_LEFT_height 8
+const char IMG_ARROW_LEFT_bits[] = {
+  0x30, 0x18, 0x0C, 0x06, 0x06, 0x0C, 0x18, 0x30, };
+// IMG_ARROW_UP
+#define IMG_ARROW_UP_width 8
+#define IMG_ARROW_UP_height 8
+const char IMG_ARROW_UP_bits[] = {
+  0x00, 0x18, 0x3C, 0x66, 0xC3, 0x81, 0x00, 0x00, };
+// IMG_ARROW_DOWN
+#define IMG_ARROW_DOWN_width 8
+#define IMG_ARROW_DOWN_height 8
+const char IMG_ARROW_DOWN_bits[] = {
+  0x00, 0x00, 0x81, 0xC3, 0x66, 0x3C, 0x18, 0x00, };
