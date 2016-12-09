@@ -149,6 +149,7 @@ OverlayCallback overlays[] = { heapOverlay };
 int overlaysCount = 1;
 
 void handleNetwork() {
+    OTA::handleUpdate();
     httpServer.handleClient();
     //httpServer.on('/index.html', handleIndex);
 }
@@ -243,6 +244,7 @@ void updateRssi() {
 }
 
 void loop() {
+
   // Wait for an OTA update before doing anything else
   if(OTA::guard()) {
     OTA::handleUpdate();
