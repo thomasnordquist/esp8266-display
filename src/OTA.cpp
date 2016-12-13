@@ -5,7 +5,7 @@
 #include <ESP8266mDNS.h>
 #include "SH1106.h"
 
-#define OTA_GUARD_WAIT 1000
+#define OTA_GUARD_WAIT 1500
 unsigned long OTA::firstGuardExecution = 0;
 bool OTA::guardHasBeenSatisfied = false;
 
