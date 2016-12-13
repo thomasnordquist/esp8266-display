@@ -1,10 +1,7 @@
-#ifndef PROGMEM
-#define PROGMEM
-#endif
-
+#include <Arduino.h>
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_4[] PROGMEM = {
+const char Roboto_4[] PROGMEM  = {
 	0x04, // Width: 4
 	0x05, // Height: 5
 	0x20, // First Char: 32
@@ -456,7 +453,7 @@ const char Roboto_4[] PROGMEM = {
 };
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_5[] PROGMEM = {
+const char Roboto_5[] PROGMEM  = {
 	0x06, // Width: 6
 	0x07, // Height: 7
 	0x20, // First Char: 32
@@ -910,7 +907,7 @@ const char Roboto_5[] PROGMEM = {
 };
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_6[] PROGMEM = {
+const char Roboto_6[] PROGMEM  = {
 	0x06, // Width: 6
 	0x08, // Height: 8
 	0x20, // First Char: 32
@@ -1366,7 +1363,7 @@ const char Roboto_6[] PROGMEM = {
 };
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_7[] PROGMEM = {
+const char Roboto_7[] PROGMEM  = {
 	0x08, // Width: 8
 	0x09, // Height: 9
 	0x20, // First Char: 32
@@ -1824,7 +1821,7 @@ const char Roboto_7[] PROGMEM = {
 
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_8[] PROGMEM = {
+const char Roboto_8[] PROGMEM  = {
 	0x09, // Width: 9
 	0x0A, // Height: 10
 	0x20, // First Char: 32
@@ -2280,7 +2277,7 @@ const char Roboto_8[] PROGMEM = {
 
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_9[] PROGMEM = {
+const char Roboto_9[] PROGMEM  = {
 	0x09, // Width: 9
 	0x0C, // Height: 12
 	0x20, // First Char: 32
@@ -2739,7 +2736,7 @@ const char Roboto_9[] PROGMEM = {
 
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_10[] PROGMEM = {
+const char Roboto_10[] PROGMEM  = {
 	0x0A, // Width: 10
 	0x0D, // Height: 13
 	0x20, // First Char: 32
@@ -3198,7 +3195,7 @@ const char Roboto_10[] PROGMEM = {
 
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_16[] PROGMEM = {
+const char Roboto_16[] PROGMEM  = {
 	0x0F, // Width: 15
 	0x13, // Height: 19
 	0x20, // First Char: 32
@@ -3657,7 +3654,7 @@ const char Roboto_16[] PROGMEM = {
 
 // Created by http://oleddisplay.squix.ch/ Consider a donation
 // In case of problems make sure that you are using the font file with the correct version!
-const char Roboto_24[] PROGMEM = {
+const char Roboto_24[] PROGMEM  = {
 	0x17, // Width: 23
 	0x1D, // Height: 29
 	0x20, // First Char: 32
