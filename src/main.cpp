@@ -23,6 +23,11 @@
 #include "Weather.hpp"
 #include "animations/Animation.hpp"
 #include "animations/elephant.h"
+#include "animations/hacker.h"
+#include "animations/stick.h"
+#include "animations/yoda.h"
+#include "animations/clippy.h"
+#include "animations/nyancat.h"
 
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
@@ -92,9 +97,21 @@ void weatherInfo(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int
     drawImage(display, 112+x, 37+y, HUMIDITY);
 }
 
-Animation *heartAnimation = new Animation(ELEPHANT, ELEPHANT_FRAMES, 32, 32, 200);
+Animation *nyanAnimation = NULL;
+Animation *clippyAnimation = NULL;
+Animation *currentAnimation = NULL;
 
+void startAnimation() {
+  if(nyanAnimation == NULL) {
+    nyanAnimation = new Animation(NYANCAT, NYANCAT_FRAMES, NYANCAT_WIDTH, NYANCAT_HEIGHT, 100);
+    clippyAnimation = new Animation(CLIPPY, CLIPPY_FRAMES, CLIPPY_WIDTH, CLIPPY_HEIGHT, 200);
+    currentAnimation = nyanAnimation;
+  } else {
+    currentAnimation->restartAnimation();
+  }
+}
 void heapOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
+
     // overwrite complete area where text will be rendered
     display->setColor(BLACK); // alternate colors
     display->fillRect(0, 54, 128, 63);
@@ -111,7 +128,13 @@ void heapOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
     display->setTextAlignment(TEXT_ALIGN_LEFT);
     display->drawString(0, 54, buffer);
 
-    display->drawXbm(10, 0, heartAnimation->_width, heartAnimation->_height, heartAnimation->getFrame());
+    if(currentAnimation && !currentAnimation->hasEnded()) {
+        display->setColor(BLACK); // alternate colors
+        display->fillRect(0, 0, 128, 64);
+        display->setColor(WHITE); // alternate colors
+        display->drawXbm(10, 0, currentAnimation->_width, currentAnimation->_height, currentAnimation->getFrame());
+    }
+//heartAnimation->getFrame();
     //display->drawString(10, 0, timeClient.getFormattedTime());
     //drawRssiImage(display, 0, 0);
 }
@@ -180,7 +203,7 @@ void setupDisplay() {
   display.invertDisplay();
 
   ui.init();
-  display.setContrast(0x50);
+  display.setContrast(0x01);
   display.flipScreenVertically();
 }
 
@@ -201,7 +224,7 @@ void setup() {
 
 unsigned long lastWeatherUpdate = LONG_MAX;
 void updateWeather() {
-  unsigned long updateInterval = 120000;
+  unsigned long updateInterval = 8000;
   if((millis() - lastWeatherUpdate) > updateInterval) {
     WeatherCondition *weather = getWeather(client);
     //getWeatherForecast(client);
@@ -212,6 +235,7 @@ void updateWeather() {
          currentWeather = NULL;
       }
       currentWeather = weather;
+      startAnimation();
     }
     lastWeatherUpdate = millis();
   }
@@ -248,23 +272,30 @@ void updateRssi() {
   }
 }
 
+bool uiIsUpdating() {
+  return currentAnimation && !currentAnimation->hasEnded();
+}
+
 void loop() {
 
   // Wait for an OTA update before doing anything else
   if(OTA::guard()) {
     OTA::handleUpdate();
-    return;
-  }
+    //return;
+  } else {
 
-  handleNetwork();
-  int remainingTimeBudget = ui.update();
+    handleNetwork();
+    int remainingTimeBudget = ui.update();
 
-  if (remainingTimeBudget > 0) {
-    updateWeather();
-    logDebugInfo();
-    updateRssi();
-    timeClient.update();
+    if (remainingTimeBudget > 0) {
+      if(!uiIsUpdating()) {
+          updateWeather();
+          logDebugInfo();
+          updateRssi();
+          timeClient.update();
+      }
 
-    delay(remainingTimeBudget);
+      delay(remainingTimeBudget);
+    }
   }
 }

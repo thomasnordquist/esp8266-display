@@ -2,7 +2,7 @@
 #include "Animation.hpp"
 #include "../Logging.hpp"
 
-Animation::Animation(const char* frames[], int frameCount, int width, int height, int speed) {
+Animation::Animation(const char* frames, int frameCount, int width, int height, int speed) {
   _frames = frames;
   _frameCount = frameCount;
   _width = width;
@@ -11,10 +11,20 @@ Animation::Animation(const char* frames[], int frameCount, int width, int height
   _speed = speed;
 }
 
+bool Animation::hasEnded() {  
+  return _currentFrame >= (_frameCount - 1);
+}
+
+void Animation::restartAnimation() {
+  _currentFrame = 0;
+}
+
 const char* Animation::getFrame() {
-  if(millis() - _lastFrameTime > _speed) {
-    _currentFrame = (_currentFrame + 1) % (_frameCount - 1);
+  if(!this->hasEnded() && millis() - _lastFrameTime > _speed) {
+    _currentFrame = (_currentFrame + 1) % (_frameCount);
     _lastFrameTime = millis();
   }
-  return _frames[_currentFrame];
+
+  int charOffset = ceil(_width / 8.0) * _height;
+  return _frames + charOffset * _currentFrame;
 }
