@@ -25,9 +25,10 @@
 #include "animations/elephant.h"
 #include "animations/hacker.h"
 #include "animations/stick.h"
-#include "animations/yoda.h"
 #include "animations/clippy.h"
 #include "animations/nyancat.h"
+
+#include "jokes/ChuckNorrisJokes.hpp"
 
 ESP8266WebServer httpServer(80);
 ESP8266HTTPUpdateServer httpUpdater;
@@ -222,11 +223,14 @@ void setup() {
   setupNtp();
 }
 
+ChuckNorrisJokes *jokes = new ChuckNorrisJokes();
+bool shouldFetchJoke = false;
 unsigned long lastWeatherUpdate = LONG_MAX;
 void updateWeather() {
   unsigned long updateInterval = 8000;
   if((millis() - lastWeatherUpdate) > updateInterval) {
     WeatherCondition *weather = getWeather(client);
+    shouldFetchJoke = true;
     //getWeatherForecast(client);
 
     if(weather) {
@@ -293,6 +297,15 @@ void loop() {
           logDebugInfo();
           updateRssi();
           timeClient.update();
+          if(shouldFetchJoke && !jokes->isJokeAvailable()) {
+            jokes->fetchJoke();
+            Logging::log("Try loading the joke\n");
+            if(jokes->isJokeAvailable()) {
+              shouldFetchJoke=false;
+              String joke = jokes->getJoke();
+              Logging::log(joke);
+            }
+          }
       }
 
       delay(remainingTimeBudget);
