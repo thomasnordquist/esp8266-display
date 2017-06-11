@@ -22,11 +22,10 @@
 #include "OLEDDisplayUi.h"
 #include "Weather.hpp"
 #include "animations/Animation.hpp"
-#include "animations/elephant.h"
-#include "animations/hacker.h"
-#include "animations/stick.h"
-#include "animations/yoda.h"
-#include "animations/clippy.h"
+//#include "animations/elephant.h"
+//#include "animations/hacker.h"
+//#include "animations/stick.h"
+//#include "animations/clippy.h"
 #include "animations/nyancat.h"
 
 ESP8266WebServer httpServer(80);
@@ -104,14 +103,16 @@ Animation *currentAnimation = NULL;
 void startAnimation() {
   if(nyanAnimation == NULL) {
     nyanAnimation = new Animation(NYANCAT, NYANCAT_FRAMES, NYANCAT_WIDTH, NYANCAT_HEIGHT, 100);
-    clippyAnimation = new Animation(CLIPPY, CLIPPY_FRAMES, CLIPPY_WIDTH, CLIPPY_HEIGHT, 200);
+    //clippyAnimation = new Animation(CLIPPY, CLIPPY_FRAMES, CLIPPY_WIDTH, CLIPPY_HEIGHT, 20);
     currentAnimation = nyanAnimation;
   } else {
     currentAnimation->restartAnimation();
   }
 }
-void heapOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
 
+
+
+void heapOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
     // overwrite complete area where text will be rendered
     display->setColor(BLACK); // alternate colors
     display->fillRect(0, 54, 128, 63);
@@ -134,7 +135,7 @@ void heapOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
         display->setColor(WHITE); // alternate colors
         display->drawXbm(10, 0, currentAnimation->_width, currentAnimation->_height, currentAnimation->getFrame());
     }
-//heartAnimation->getFrame();
+
     //display->drawString(10, 0, timeClient.getFormattedTime());
     //drawRssiImage(display, 0, 0);
 }
@@ -143,6 +144,10 @@ void timeFrame(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16
     display->setFont(Roboto_24);
     display->setTextAlignment(TEXT_ALIGN_RIGHT);
     display->drawString(128+x, 30+y, timeClient.getFormattedTime());
+}
+
+void clockOverlay(OLEDDisplay *display, OLEDDisplayUiState* state) {
+    timeFrame(display, state, 0, 0);
 }
 
 void airInfo(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
@@ -165,6 +170,39 @@ void airInfo(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t
     drawImage(display, 112+x, 37+y, HPA);
 }
 
+int infoX = 110;
+int infoY = 0;
+
+void infoPressure(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
+  char buffer[16];
+
+  sprintf(buffer, "%d hPa", round(currentWeather->pressure));
+  display->setFont(Roboto_24);
+  display->drawString(infoX + x, 0+y, buffer);
+  drawImage(display, infoX + x + 2, 5+y, HPA);
+}
+
+void infoWindspeed(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
+  char buffer[16];
+  sprintf(buffer, "%d m/s", round(currentWeather->windSpeed));
+  display->setFont(Roboto_24);
+  display->drawString(infoX + x , 0+y, buffer);
+  drawImage(display, infoX + x + 2, 5+y, WIND);
+}
+
+void infoTemperature(OLEDDisplay *display, OLEDDisplayUiState* state, int16_t x, int16_t y) {
+  char buffer[16];
+  sprintf(buffer, "%d °C", currentWeather->temperature);
+  display->setFont(Roboto_24);
+  display->setTextAlignment(TEXT_ALIGN_RIGHT);
+  display->drawString(infoX + x, 0+y, buffer);
+  drawImage(display, infoX + x + 2, 5+y, TEMPERATURE);
+}
+
+FrameCallback infoFrames[] = { infoTemperature, infoPressure, infoWindspeed };
+int infoFrameCount = 3;
+
+
 // This array keeps function pointers to all frames
 // frames are the single views that slide in
 FrameCallback frames[] = { timeFrame, weatherInfo, airInfo };
@@ -173,8 +211,8 @@ FrameCallback frames[] = { timeFrame, weatherInfo, airInfo };
 int frameCount = 3;
 
 // Overlays are statically drawn on top of a frame eg. a clock
-OverlayCallback overlays[] = { heapOverlay };
-int overlaysCount = 1;
+OverlayCallback overlays[] = { heapOverlay, clockOverlay };
+int overlaysCount = 2;
 
 void handleNetwork() {
     OTA::handleUpdate();
@@ -184,26 +222,29 @@ void handleNetwork() {
 
 void setupNtp() {
   timeClient.setUpdateInterval(5 * ONE_MINUTE);
-  timeClient.setTimeOffset( +(ONE_HOUR / 1000) );
+  timeClient.setTimeOffset( +(2 * ONE_HOUR / 1000) ); // gmt + 2
   timeClient.begin();
 }
 
 void setupDisplay() {
   ui.setTargetFPS(30);
+  ui.setTimePerFrame(0); // Continous transitions
+  ui.setTimePerTransition(1500); // Scroll speed
 
   // TOP, LEFT, BOTTOM, RIGHT
-  ui.setIndicatorPosition(LEFT);
+  ui.disableIndicator();
+  //ui.setIndicatorPosition(LEFT);
   // Defines where the first frame is located in the bar.
-  ui.setIndicatorDirection(LEFT_RIGHT);
+  //ui.setIndicatorDirection(LEFT_RIGHT);
   // SLIDE_LEFT, SLIDE_RIGHT, SLIDE_UP, SLIDE_DOWN
-  ui.setFrameAnimation(SLIDE_DOWN);
-  ui.setFrames(frames, frameCount);
+  ui.setFrameAnimation(SLIDE_RIGHT);
+  ui.setFrames(infoFrames, infoFrameCount);
   ui.setOverlays(overlays, overlaysCount);
   //ui.disableAutoTransition();
-  display.invertDisplay();
+  //display.invertDisplay();
 
   ui.init();
-  display.setContrast(0x01);
+  display.setContrast(0x64);
   display.flipScreenVertically();
 }
 
@@ -224,7 +265,7 @@ void setup() {
 
 unsigned long lastWeatherUpdate = LONG_MAX;
 void updateWeather() {
-  unsigned long updateInterval = 8000;
+  unsigned long updateInterval = 60000 * 5;
   if((millis() - lastWeatherUpdate) > updateInterval) {
     WeatherCondition *weather = getWeather(client);
     //getWeatherForecast(client);
@@ -235,7 +276,10 @@ void updateWeather() {
          currentWeather = NULL;
       }
       currentWeather = weather;
+
+      // Show nyan cat at random intervals
       startAnimation();
+
     }
     lastWeatherUpdate = millis();
   }
@@ -272,6 +316,15 @@ void updateRssi() {
   }
 }
 
+long lastAnimated = LONG_MAX;
+void animate() {
+  unsigned long updateInterval = 12319;
+  if(millis() - lastAnimated > updateInterval) {
+    startAnimation();
+    lastAnimated = millis();
+  }
+}
+
 bool uiIsUpdating() {
   return currentAnimation && !currentAnimation->hasEnded();
 }
@@ -293,6 +346,7 @@ void loop() {
           logDebugInfo();
           updateRssi();
           timeClient.update();
+          animate();
       }
 
       delay(remainingTimeBudget);
